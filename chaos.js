@@ -1,8 +1,8 @@
-const canvas = document.querySelector('canvas');
+const canvas = document.getElementById('myCanvas');
 const c = canvas.getContext('2d');
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+// canvas.width = window.innerWidth;
+// canvas.height = window.innerHeight;
 
 const mouseCoordinates = {
   x: undefined,
@@ -24,19 +24,27 @@ const colorArray = [
 ];
 
 canvas.addEventListener('mousemove', function(event) {
-  mouseCoordinates.x = event.x;
-  mouseCoordinates.y = event.y;
-//  this.console.log(mouseCoordinates);
+  const rect = canvas.getBoundingClientRect();
+  mouseCoordinates.x = event.clientX - rect.left;
+  mouseCoordinates.y = event.clientY - rect.top;
+  console.log(mouseCoordinates);
 });
 
-canvas.addEventListener('resize', function() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+window.addEventListener('resize', function() {
+  // console.log("window resized!");
+  // console.log("canvas.width: " + canvas.width);
+  // console.log("canvas.height: " + canvas.height);
+
+  // canvas.width = window.innerWidth;
+  // canvas.height = window.innerHeight;
 
   initialize();
 });
 
 canvas.addEventListener('mouseleave', function() {
+ // console.log("mouse pointer left canvas!");
+  console.log("canvas.width: " + canvas.width);
+  console.log("canvas.height: " + canvas.height)
   mouseCoordinates.x = -300;
   mouseCoordinates.y = -300;
 });
@@ -103,12 +111,12 @@ class Circle {
     }
 
     // circle bumps into the left/right side of window
-    if (this.x + this.radius > innerWidth ||
+    if (this.x + this.radius > canvas.width ||
         this.x - this.radius < 0) {
           this.dx = -this.dx;    // reverse velocity
     } 
     // circle bumps into the top/bottom of window
-    if (this.y + this.radius > innerHeight ||
+    if (this.y + this.radius > canvas.height ||
         this.y - this.radius < 0) {
           this.dy = -this.dy;
     }   
@@ -137,8 +145,10 @@ function initialize() {
   // create all circles
   for (let i = 0; i < numberOfCircles; i++) {
     const radius = Math.random() * 3 + 1;
-    const x = Math.random() * (innerWidth - (radius * 2)) +          radius;
-    const y = Math.random() * (innerHeight - (radius * 2)) +         radius;
+    // const x = Math.random() * (innerWidth - (radius * 2)) +          radius;
+    // const y = Math.random() * (innerHeight - (radius * 2)) +         radius;
+    const x = Math.random() * (canvas.width - (radius * 2)) +          radius;
+    const y = Math.random() * (canvas.height - (radius * 2)) +         radius;
     const dx = (Math.random() - 0.5);  // x velocity
     const dy = (Math.random() - 0.5);  // y velocity
     circleArray.push(new Circle(x, y, dx, dy, radius));
@@ -147,7 +157,7 @@ function initialize() {
 
 function animateCircles() {
   requestAnimationFrame(animateCircles); // recursive call
-  c.clearRect(0,0, innerWidth, innerHeight );
+  c.clearRect(0,0, canvas.width, canvas.height );
 
   circleArray.forEach(elem => elem.update());
 }
