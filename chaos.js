@@ -4,6 +4,9 @@ const c = canvas.getContext('2d');
 // canvas.width = window.innerWidth;
 // canvas.height = window.innerHeight;
 
+canvas.width = 900;
+canvas.height = 600;
+
 const mouseCoordinates = {
   x: undefined,
   y: undefined
